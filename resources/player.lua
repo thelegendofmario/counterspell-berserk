@@ -22,6 +22,8 @@ function player:update(k)
         x = x + self.speed
     end
 
+
+
     if isEmpty(x, y) then
         self.tile_x = x
         self.tile_y = y
