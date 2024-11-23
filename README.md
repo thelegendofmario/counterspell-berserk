@@ -27,4 +27,4 @@ love .
 
 ## License
 
-_© 2024 Kieran Klukas - Licensed under [AGPL 3.0](LICENSE.md)_  
+_© 2024 Kieran Klukas ([@kcoderhtml](https://github.com/kcoderhtml/)), Ethan Francis ([@thelegendofmario](https://github.com/thelegendofmario)), and Holden Adler ([@whynotjava](https://github.com/whynotjava)) - Licensed under [AGPL 3.0](LICENSE.md)_  
