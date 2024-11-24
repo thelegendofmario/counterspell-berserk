@@ -1,6 +1,37 @@
 ---@diagnostic disable: undefined-global, lowercase-global
 
 
+function isBadEnemySpawn(x, y)
+    -- for _, enemy in ipairs(enemies) do
+    --     if enemy.tile_x == x and enemy.tile_y == y then
+    --         return true
+    --     end
+    -- end
+
+    -- check player
+    if player.tile_x == x and player.tile_y == y then
+        return true
+    end
+
+    for _, sword in ipairs(swords) do
+        if sword.tile_x == x and sword.tile_y == y then
+            return true
+        end
+    end
+    
+    return false
+end
+
+function spawnEnemy(tilemap)
+    local enemy
+    repeat
+        enemy = require 'resources.enemy'
+        enemy.tile_x = math.random(1, #Tilemap[1])
+        enemy.tile_y = math.random(1, #Tilemap)
+    until tilemap[enemy.tile_y][enemy.tile_x] == 5 and not isBadEnemySpawn(enemy.tile_x, enemy.tile_y)
+    return enemy
+end
+
 
 function love.load()
     --[[
@@ -37,12 +68,13 @@ function love.load()
     function berserkBar:draw()
         love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
     end
+    function player:drawBar()
+        love.graphics.rectangle("fill", screen_width-32*3, screen_height-16, self.swords*32, 16)
+    end
     
+    enemies = {}
+    table.insert(enemies, spawnEnemy(Tilemap, player, swords))
 end
-
-
-
-
 
 function love.keypressed(k)
     player:update(k)
@@ -64,6 +96,7 @@ function love.keypressed(k)
     end
 end
 
+local timer = 0
 function love.update(dt)
     berserkBar.width = berserkBar.width - berserkBar.decayRate
     for i, sword in ipairs(swords) do
@@ -73,7 +106,31 @@ function love.update(dt)
         if sword.x < -0.5*quad.twidth or sword.x > screen_width or sword.y < -0.5*quad.theight or sword.y > screen_height then
             table.remove(swords, i)
             player.swords = player.swords + 1
+        else
+            -- check if it is killing an enemy
+            for j, enemy in ipairs(enemies) do
+                if sword.x >= enemy.tile_x*quad.twidth-quad.twidth and sword.x <= enemy.tile_x*quad.twidth and sword.y >= enemy.tile_y*quad.theight-quad.theight and sword.y <= enemy.tile_y*quad.theight then
+                    table.insert(enemies, spawnEnemy(Tilemap, player, swords))
+                    table.remove(enemies, j)
+                    table.remove(swords, i)
+                    player.swords = player.swords + 1
+                    berserkBar.width = berserkBar.width + 10
+                end
+            end
         end
+    end
+
+    timer = timer + dt
+    if timer >= 1 then
+        timer = timer - 1
+        love.updateEverySecond()
+    end
+end
+
+function love.updateEverySecond()
+    -- Code to be executed every second
+    for i, enemy in ipairs(enemies) do
+        enemy:update(player, swords)
     end
 end
 
@@ -82,6 +139,10 @@ function love.draw()
     for i, j in ipairs(swords) do
         love.graphics.draw(love.graphics.newImage("resources/sprites/sword/sword"..math.floor(j.frame + 1)..".png"), j.x, j.y)
     end
+    for i, j in ipairs(enemies) do
+        love.graphics.draw(j.image, j.tile_x*quad.twidth-quad.twidth, j.tile_y*quad.theight-quad.theight)
+    end
     love.graphics.draw(player.image, player.tile_x*quad.twidth-quad.twidth, player.tile_y*quad.theight-quad.theight)
     berserkBar:draw()
+    player:drawBar()
 end
