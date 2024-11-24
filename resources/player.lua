@@ -30,7 +30,7 @@ function player:update(k)
     end
 end
 function isEmpty(x,y)
-    return Tilemap[y][x] == 0
+    return Tilemap[y][x] == 5
 end
 
 return player
