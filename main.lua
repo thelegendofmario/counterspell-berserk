@@ -47,19 +47,19 @@ end
 function love.keypressed(k)
     player:update(k)
     if k == "left" then
-        sword = {dir = "left", x = (player.tile_x-2)*quad.twidth, speed = {x = -1, y = 0}, y = (player.tile_y-1)*quad.theight}
+        sword = {dir = "left", x = (player.tile_x-2)*quad.twidth, speed = {x = -1, y = 0}, y = (player.tile_y-1)*quad.theight, frame = 1}
     elseif k == "right" then
-        sword = {dir = "right", x = player.tile_x*quad.twidth, speed = {x = 1, y = 0}, y = (player.tile_y-1)*quad.theight}
+        sword = {dir = "right", x = player.tile_x*quad.twidth, speed = {x = 1, y = 0}, y = (player.tile_y-1)*quad.theight, frame =1}
     elseif k == "up" then
-        sword = {dir = "up", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = -1}, y = (player.tile_y-2)*quad.theight}
+        sword = {dir = "up", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = -1}, y = (player.tile_y-2)*quad.theight, frame =1}
     elseif k == "down" then
-        sword = {dir = "down", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = 1}, y = player.tile_y*quad.theight}
+        sword = {dir = "down", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = 1}, y = player.tile_y*quad.theight, frame =1}
     end
     
     if sword then
         table.insert(swords, sword)
         for i, val in ipairs(swords) do
-            print(val)
+            print(val.frame)
         end
     end
 end
@@ -69,6 +69,7 @@ function love.update(dt)
     for i, sword in ipairs(swords) do
         sword.x = sword.x + sword.speed.x
         sword.y = sword.y + sword.speed.y
+        sword.frame = (sword.frame + 0.01) % 17 + 1
         if sword.x < -0.5*quad.twidth or sword.x > screen_width or sword.y < -0.5*quad.theight or sword.y > screen_height then
             table.remove(swords, i)
         end
@@ -86,8 +87,8 @@ function love.draw()
     end]]
     quad:draw(Tilemap)
     --love.graphics.rectangle("fill")
-    for i,j in ipairs(swords) do
-        love.graphics.draw(love.graphics.newImage("resources/sprites/player.png"), j.x, j.y)
+    for i, j in ipairs(swords) do
+        love.graphics.draw(love.graphics.newImage("resources/sprites/sword/sword"..math.floor(j.frame)..".png"), j.x, j.y)
     end
     love.graphics.draw(player.image, player.tile_x*quad.twidth-quad.twidth, player.tile_y*quad.theight-quad.theight)
     berserkBar:draw()
