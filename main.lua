@@ -47,8 +47,16 @@ end
 function love.keypressed(k)
     player:update(k)
     if k == "left" then
-        sword = {dir = "left",x = player.tile_x, speed=1, y= player.tile_y}
-        
+        sword = {dir = "left", x = (player.tile_x-2)*quad.twidth, speed = {x = -1, y = 0}, y = (player.tile_y-1)*quad.theight}
+    elseif k == "right" then
+        sword = {dir = "right", x = player.tile_x*quad.twidth, speed = {x = 1, y = 0}, y = (player.tile_y-1)*quad.theight}
+    elseif k == "up" then
+        sword = {dir = "up", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = -1}, y = (player.tile_y-2)*quad.theight}
+    elseif k == "down" then
+        sword = {dir = "down", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = 1}, y = player.tile_y*quad.theight}
+    end
+    
+    if sword then
         table.insert(swords, sword)
         for i, val in ipairs(swords) do
             print(val)
@@ -59,8 +67,10 @@ end
 function love.update(dt)
     berserkBar.width = berserkBar.width - berserkBar.decayRate
     for i, sword in ipairs(swords) do
-        if sword.dir == 'left' then
-            sword.x = sword.x - sword.speed
+        sword.x = sword.x + sword.speed.x
+        sword.y = sword.y + sword.speed.y
+        if sword.x < -0.5*quad.twidth or sword.x > screen_width or sword.y < -0.5*quad.theight or sword.y > screen_height then
+            table.remove(swords, i)
         end
     end
 end
