@@ -46,18 +46,21 @@ end
 
 function love.keypressed(k)
     player:update(k)
-    if k == "left" then
-        sword = {dir = "left", x = (player.tile_x-2)*quad.twidth, speed = {x = -1, y = 0}, y = (player.tile_y-1)*quad.theight, frame = 1}
-    elseif k == "right" then
-        sword = {dir = "right", x = player.tile_x*quad.twidth, speed = {x = 1, y = 0}, y = (player.tile_y-1)*quad.theight, frame =1}
-    elseif k == "up" then
-        sword = {dir = "up", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = -1}, y = (player.tile_y-2)*quad.theight, frame =1}
-    elseif k == "down" then
-        sword = {dir = "down", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = 1}, y = player.tile_y*quad.theight, frame =1}
-    end
-    
-    if sword then
-        table.insert(swords, sword)
+    if player.swords ~= 0 then
+        if k == "left" then
+            sword = {dir = "left", x = (player.tile_x-2)*quad.twidth, speed = {x = -1, y = 0}, y = (player.tile_y-1)*quad.theight, frame = 1}
+        elseif k == "right" then
+            sword = {dir = "right", x = player.tile_x*quad.twidth, speed = {x = 1, y = 0}, y = (player.tile_y-1)*quad.theight, frame =1}
+        elseif k == "up" then
+            sword = {dir = "up", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = -1}, y = (player.tile_y-2)*quad.theight, frame =1}
+        elseif k == "down" then
+            sword = {dir = "down", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = 1}, y = player.tile_y*quad.theight, frame =1}
+        end
+
+        if sword then
+            table.insert(swords, sword)
+            player.swords = player.swords - 1
+        end
     end
 end
 
@@ -69,6 +72,7 @@ function love.update(dt)
         sword.frame = (sword.frame + 0.2) % 17
         if sword.x < -0.5*quad.twidth or sword.x > screen_width or sword.y < -0.5*quad.theight or sword.y > screen_height then
             table.remove(swords, i)
+            player.swords = player.swords + 1
         end
     end
 end

@@ -3,6 +3,7 @@ player.tile_x = 2
 player.tile_y = 2
 player.image = love.graphics.newImage('resources/sprites/character.png')
 player.speed = 1
+player.swords = 3
 --player.scale = {0.2,0.2}
 
 
