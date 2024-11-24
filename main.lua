@@ -58,9 +58,6 @@ function love.keypressed(k)
     
     if sword then
         table.insert(swords, sword)
-        for i, val in ipairs(swords) do
-            print(val.frame)
-        end
     end
 end
 
@@ -69,7 +66,7 @@ function love.update(dt)
     for i, sword in ipairs(swords) do
         sword.x = sword.x + sword.speed.x
         sword.y = sword.y + sword.speed.y
-        sword.frame = (sword.frame + 0.01) % 17 + 1
+        sword.frame = (sword.frame + 0.2) % 17
         if sword.x < -0.5*quad.twidth or sword.x > screen_width or sword.y < -0.5*quad.theight or sword.y > screen_height then
             table.remove(swords, i)
         end
@@ -88,7 +85,7 @@ function love.draw()
     quad:draw(Tilemap)
     --love.graphics.rectangle("fill")
     for i, j in ipairs(swords) do
-        love.graphics.draw(love.graphics.newImage("resources/sprites/sword/sword"..math.floor(j.frame)..".png"), j.x, j.y)
+        love.graphics.draw(love.graphics.newImage("resources/sprites/sword/sword"..math.floor(j.frame + 1)..".png"), j.x, j.y)
     end
     love.graphics.draw(player.image, player.tile_x*quad.twidth-quad.twidth, player.tile_y*quad.theight-quad.theight)
     berserkBar:draw()
