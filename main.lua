@@ -78,16 +78,7 @@ function love.update(dt)
 end
 
 function love.draw()
-    --[[for i,row in ipairs(Tilemap) do
-        for j,tile in ipairs(row) do
-            if tile ~= 0 then
-                --love.graphics.setColor(Colors[tile])
-                love.graphics.draw(quad.base_image, quad.quads[tile], j*quad.twidth-quad.twidth,i*quad.theight-quad.theight)
-            end
-        end
-    end]]
     quad:draw(Tilemap)
-    --love.graphics.rectangle("fill")
     for i, j in ipairs(swords) do
         love.graphics.draw(love.graphics.newImage("resources/sprites/sword/sword"..math.floor(j.frame + 1)..".png"), j.x, j.y)
     end
