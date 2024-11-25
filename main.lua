@@ -42,7 +42,7 @@ function love.load()
     swords = {}
     player = require 'resources.player'
     quad = require 'resources.quadify'
-    quad:set_image("resources/sprites/tiles.png", 3, 3)
+    quad:set_image("resources/sprites/tiles.png", 3, 5)
     quad:make_quads()
     Tilemap = {
         {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3},
@@ -52,24 +52,25 @@ function love.load()
         {4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6},
         {4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6},
         {4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6},
-        {7,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,9},
+        {11,12,12,13,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,10,10,10,10,10},
     }
     screen_height = (quad.twidth*#Tilemap)
     screen_width = (quad.theight*#Tilemap[1])
     love.window.setMode(screen_width, screen_height)
     berserkBar = {
-        width = 64,
-        height = 32,
+        count = 3,
         decayRate = 0.001
     }
-    berserkBar.x = 0
-    berserkBar.y = screen_height-berserkBar.height
 
     function berserkBar:draw()
-        love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+        for i = 1, math.ceil(berserkBar.count) do
+            love.graphics.draw(love.graphics.newImage("resources/sprites/berserk-star.png"), 49 + i * 12, screen_height - 39)
+        end
     end
     function player:drawBar()
-        love.graphics.rectangle("fill", screen_width-self.swords*64, screen_height-32, self.swords*64, 32)
+        for i = 1, self.swords do
+            love.graphics.draw(love.graphics.newImage("resources/sprites/sword.png"), screen_width - i * 62, screen_height - 64)
+        end
     end
     
     enemies = {}
@@ -99,7 +100,7 @@ end
 
 local timer = 0
 function love.update(dt)
-    berserkBar.width = berserkBar.width - berserkBar.decayRate
+    berserkBar.count = berserkBar.count - berserkBar.decayRate
     for i, sword in ipairs(swords) do
         sword.x = sword.x + sword.speed.x
         sword.y = sword.y + sword.speed.y
@@ -115,7 +116,7 @@ function love.update(dt)
                     table.remove(enemies, j)
                     table.remove(swords, i)
                     player.swords = player.swords + 1
-                    berserkBar.width = berserkBar.width + 10
+                    berserkBar.count = berserkBar.count + 1
                 end
             end
         end
