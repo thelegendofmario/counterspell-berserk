@@ -122,8 +122,8 @@ function love.update(dt)
     end
 
     timer = timer + dt
-    if timer >= 1 then
-        timer = timer - 1
+    if timer >= 0.5 then
+        timer = 0
         love.updateEverySecond()
     end
 end
