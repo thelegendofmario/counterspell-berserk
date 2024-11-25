@@ -78,15 +78,16 @@ end
 
 function love.keypressed(k)
     player:update(k)
+    speed = 4
     if player.swords ~= 0 then
         if k == "left" then
-            sword = {dir = "left", x = (player.tile_x-2)*quad.twidth, speed = {x = -1, y = 0}, y = (player.tile_y-1)*quad.theight, frame = 1}
+            sword = {dir = "left", x = (player.tile_x-2)*quad.twidth, speed = {x = -1*speed, y = 0}, y = (player.tile_y-1)*quad.theight, frame = 1}
         elseif k == "right" then
-            sword = {dir = "right", x = player.tile_x*quad.twidth, speed = {x = 1, y = 0}, y = (player.tile_y-1)*quad.theight, frame =1}
+            sword = {dir = "right", x = player.tile_x*quad.twidth, speed = {x = 1*speed, y = 0}, y = (player.tile_y-1)*quad.theight, frame =1}
         elseif k == "up" then
-            sword = {dir = "up", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = -1}, y = (player.tile_y-2)*quad.theight, frame =1}
+            sword = {dir = "up", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = -1*speed}, y = (player.tile_y-2)*quad.theight, frame =1}
         elseif k == "down" then
-            sword = {dir = "down", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = 1}, y = player.tile_y*quad.theight, frame =1}
+            sword = {dir = "down", x = (player.tile_x-1)*quad.twidth, speed = {x = 0, y = 1*speed}, y = player.tile_y*quad.theight, frame =1}
         end
 
         if sword then
@@ -102,14 +103,14 @@ function love.update(dt)
     for i, sword in ipairs(swords) do
         sword.x = sword.x + sword.speed.x
         sword.y = sword.y + sword.speed.y
-        sword.frame = (sword.frame + 0.2) % 17
+        sword.frame = (sword.frame + 0.4) % 17
         if sword.x < -0.5*quad.twidth or sword.x > screen_width or sword.y < -0.5*quad.theight or sword.y > screen_height then
             table.remove(swords, i)
             player.swords = player.swords + 1
         else
             -- check if it is killing an enemy
             for j, enemy in ipairs(enemies) do
-                if sword.x >= enemy.tile_x*quad.twidth-quad.twidth and sword.x <= enemy.tile_x*quad.twidth and sword.y >= enemy.tile_y*quad.theight-quad.theight and sword.y <= enemy.tile_y*quad.theight then
+                if sword.x >= enemy.tile_x*quad.twidth-quad.twidth-8 and sword.x <= enemy.tile_x*quad.twidth+8 and sword.y >= enemy.tile_y*quad.theight-quad.theight-8 and sword.y <= enemy.tile_y*quad.theight+8 then
                     table.insert(enemies, spawnEnemy(Tilemap, player, swords))
                     table.remove(enemies, j)
                     table.remove(swords, i)
