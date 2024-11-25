@@ -100,7 +100,7 @@ end
 
 local timer = 0
 function love.update(dt)
-    berserkBar.count = berserkBar.count - berserkBar.decayRate
+    berserkBar.count = math.min(10, berserkBar.count - berserkBar.decayRate)
     for i, sword in ipairs(swords) do
         sword.x = sword.x + sword.speed.x
         sword.y = sword.y + sword.speed.y
