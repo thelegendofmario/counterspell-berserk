@@ -69,7 +69,7 @@ function love.load()
         love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
     end
     function player:drawBar()
-        love.graphics.rectangle("fill", screen_width-32*3, screen_height-16, self.swords*32, 16)
+        love.graphics.rectangle("fill", screen_width-self.swords*64, screen_height-32, self.swords*64, 32)
     end
     
     enemies = {}
