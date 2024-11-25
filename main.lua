@@ -31,11 +31,11 @@ function spawnEnemy(tilemap)
 end
 
 function love.load()
-    --[[
-    --wf = require "resources.libraries.windfield-master.windfield"
-    world = love.physics.newWorld(0,0,true)
-    world:setGravity(0,512)
-    ]]
+    game = {
+        killed = 0,
+        state = "menu"
+    }
+    love.graphics.setNewFont(60)
     swords = {}
     player = require 'resources.player'
     quad = require 'resources.quadify'
@@ -75,94 +75,103 @@ function love.load()
 end
 
 function love.keypressed(k)
-    player:update(k)
-    speed = 4
-    if player.swords ~= 0 then
-        if k == "left" then
-            sword = {
-                dir = "left",
-                x = (player.tile_x - 2) * quad.twidth,
-                speed = {
-                    x = -1 * speed,
-                    y = 0
-                },
-                y = (player.tile_y - 1) * quad.theight,
-                frame = 1
-            }
-        elseif k == "right" then
-            sword = {
-                dir = "right",
-                x = player.tile_x * quad.twidth,
-                speed = {
-                    x = 1 * speed,
-                    y = 0
-                },
-                y = (player.tile_y - 1) * quad.theight,
-                frame = 1
-            }
-        elseif k == "up" then
-            sword = {
-                dir = "up",
-                x = (player.tile_x - 1) * quad.twidth,
-                speed = {
-                    x = 0,
-                    y = -1 * speed
-                },
-                y = (player.tile_y - 2) * quad.theight,
-                frame = 1
-            }
-        elseif k == "down" then
-            sword = {
-                dir = "down",
-                x = (player.tile_x - 1) * quad.twidth,
-                speed = {
-                    x = 0,
-                    y = 1 * speed
-                },
-                y = player.tile_y * quad.theight,
-                frame = 1
-            }
-        end
+    local switch = {
+        ["menu"] = function()
+            game.state = "playing"
+        end,
+        ["playing"] = function()
+            player:update(k)
+            if player.swords > 0 then
+                local directions = {
+                    left = {
+                        x = -1,
+                        y = 0
+                    },
+                    right = {
+                        x = 1,
+                        y = 0
+                    },
+                    up = {
+                        x = 0,
+                        y = -1
+                    },
+                    down = {
+                        x = 0,
+                        y = 1
+                    }
+                }
 
-        if sword then
-            table.insert(swords, sword)
-            player.swords = player.swords - 1
+                local dir = directions[k]
+                if dir then
+                    local sword = {
+                        dir = k,
+                        x = (player.tile_x - 1 + dir.x) * quad.twidth,
+                        y = (player.tile_y - 1 + dir.y) * quad.theight,
+                        speed = {
+                            x = dir.x * 4,
+                            y = dir.y * 4
+                        },
+                        frame = 1
+                    }
+                    table.insert(swords, sword)
+                    player.swords = player.swords - 1
+                end
+            end
+        end,
+        ["gameOver"] = function()
         end
-    end
+    }
+
+    switch[game.state]()
 end
 
 local timer = 0
 function love.update(dt)
-    berserkBar.count = math.min(10, berserkBar.count - berserkBar.decayRate)
-    for i, sword in ipairs(swords) do
-        sword.x = sword.x + sword.speed.x
-        sword.y = sword.y + sword.speed.y
-        sword.frame = (sword.frame + 0.4) % 17
-        if sword.x < -0.5 * quad.twidth or sword.x > screen_width or sword.y < -0.5 * quad.theight or sword.y >
-            screen_height then
-            table.remove(swords, i)
-            player.swords = player.swords + 1
-        else
-            -- check if it is killing an enemy
-            for j, enemy in ipairs(enemies) do
-                if sword.x >= enemy.tile_x * quad.twidth - quad.twidth - 8 and sword.x <= enemy.tile_x * quad.twidth + 8 and
-                    sword.y >= enemy.tile_y * quad.theight - quad.theight - 8 and sword.y <= enemy.tile_y * quad.theight +
-                    8 then
-                    table.insert(enemies, spawnEnemy(Tilemap, player, swords))
-                    table.remove(enemies, j)
+    local switch = {
+        ["menu"] = function()
+        end,
+        ["playing"] = function()
+            berserkBar.count = math.min(10, berserkBar.count - berserkBar.decayRate)
+            if berserkBar.count <= 0 then
+                game.state = "gameOver"
+            end
+
+            for i, sword in ipairs(swords) do
+                sword.x = sword.x + sword.speed.x
+                sword.y = sword.y + sword.speed.y
+                sword.frame = (sword.frame + 0.4) % 17
+                if sword.x < -0.5 * quad.twidth or sword.x > screen_width or sword.y < -0.5 * quad.theight or sword.y >
+                    screen_height then
                     table.remove(swords, i)
                     player.swords = player.swords + 1
-                    berserkBar.count = berserkBar.count + 1
+                else
+                    -- check if it is killing an enemy
+                    for j, enemy in ipairs(enemies) do
+                        if sword.x >= enemy.tile_x * quad.twidth - quad.twidth - 8 and sword.x <= enemy.tile_x *
+                            quad.twidth + 8 and sword.y >= enemy.tile_y * quad.theight - quad.theight - 8 and sword.y <=
+                            enemy.tile_y * quad.theight + 8 then
+                            table.insert(enemies, spawnEnemy(Tilemap, player, swords))
+                            table.remove(enemies, j)
+                            table.remove(swords, i)
+                            game.killed = game.killed + 1
+                            player.swords = player.swords + 1
+                            berserkBar.count = berserkBar.count + 1
+                        end
+                    end
                 end
             end
-        end
-    end
 
-    timer = timer + dt
-    if timer >= 0.5 then
-        timer = 0
-        love.updateEverySecond()
-    end
+            timer = timer + dt
+            if timer >= 0.5 then
+                timer = 0
+                love.updateEverySecond()
+            end
+        end,
+        ["gameOver"] = function()
+        end
+    }
+
+    switch[game.state]()
 end
 
 function love.updateEverySecond()
@@ -173,16 +182,30 @@ function love.updateEverySecond()
 end
 
 function love.draw()
-    quad:draw(Tilemap)
-    for i, j in ipairs(swords) do
-        love.graphics.draw(love.graphics.newImage("resources/sprites/sword/sword" .. math.floor(j.frame + 1) .. ".png"),
-            j.x, j.y)
-    end
-    for i, j in ipairs(enemies) do
-        love.graphics.draw(j.image, j.tile_x * quad.twidth - quad.twidth, j.tile_y * quad.theight - quad.theight)
-    end
-    love.graphics.draw(player.image, player.tile_x * quad.twidth - quad.twidth,
-        player.tile_y * quad.theight - quad.theight)
-    berserkBar:draw()
-    player:drawBar()
+    local switch = {
+        ["menu"] = function()
+            love.graphics.printf("Press any key to start", 0, screen_height / 3, screen_width - 100, 'center')
+        end,
+        ["playing"] = function()
+            quad:draw(Tilemap)
+            for i, j in ipairs(swords) do
+                love.graphics.draw(love.graphics.newImage("resources/sprites/sword/sword" .. math.floor(j.frame + 1) ..
+                                                              ".png"), j.x, j.y)
+            end
+            for i, j in ipairs(enemies) do
+                love.graphics
+                    .draw(j.image, j.tile_x * quad.twidth - quad.twidth, j.tile_y * quad.theight - quad.theight)
+            end
+            love.graphics.draw(player.image, player.tile_x * quad.twidth - quad.twidth,
+                player.tile_y * quad.theight - quad.theight)
+            berserkBar:draw()
+            player:drawBar()
+        end,
+        ["gameOver"] = function()
+            love.graphics.printf("Game Over :(\nYou killed " .. game.killed .. " furballs", 0, screen_height / 3,
+                screen_width - 100, 'center')
+        end
+    }
+
+    switch[game.state]()
 end
