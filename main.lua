@@ -59,7 +59,7 @@ function love.load()
     love.window.setMode(screen_width, screen_height)
     berserkBar = {
         count = 3,
-        decayRate = 0.001
+        decayRate = 0.004
     }
 
     function berserkBar:draw()
