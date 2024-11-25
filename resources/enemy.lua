@@ -7,7 +7,7 @@ enemy.speed = 1
 function enemy:update(player, swords)
     local x = self.tile_x
     local y = self.tile_y
-    
+
     -- pick a random direction and then randomly decide to move in that direction
     local direction = math.random(4)
     if direction == 1 then

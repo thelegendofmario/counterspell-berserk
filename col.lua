@@ -12,18 +12,17 @@ function check(recta, rectb)
     box2.bottomy = rectb.y + rectb.height
     box2.topy = rectb.y
 
-    if  box2.rightx >= box1.leftx then
+    if box2.rightx >= box1.leftx then
         if box2.leftx <= box1.rightx then
-            return true 
+            return true
         end
 
-       
-       -- if((box2.topy <= box1.bottomy) and (box2.bottomy >= box1.topy)) then
-           -- return true;
+        -- if((box2.topy <= box1.bottomy) and (box2.bottomy >= box1.topy)) then
+        -- return true;
 
-        --else
-           -- return false
-       -- end
+        -- else
+        -- return false
+        -- end
 
     else
         return false
