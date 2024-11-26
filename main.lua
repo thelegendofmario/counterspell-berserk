@@ -63,8 +63,6 @@ function love.load()
         decayRate = 0.004
     }
 
-    print(screen_height, "x", screen_width)
-
     function berserkBar:draw()
         for i = 1, math.ceil(berserkBar.count) do
             love.graphics.draw(love.graphics.newImage("resources/sprites/berserk-star.png"), 49 + i * 12,
