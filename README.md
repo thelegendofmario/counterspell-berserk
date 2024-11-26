@@ -8,7 +8,7 @@
 #
 
 <p align="center">
-  <img width="280" height="215" src="https://raw.githubusercontent.com/thelegendofmario/counterspell-berserk/refs/heads/main/.github/images/title.png">
+  <img width="680" height="215" src="https://raw.githubusercontent.com/thelegendofmario/counterspell-berserk/refs/heads/main/.github/images/title.png">
 </p>
 
 <p align="center">
