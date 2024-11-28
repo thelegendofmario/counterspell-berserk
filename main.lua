@@ -57,7 +57,7 @@ function init_vars()
                {11, 12, 12, 13, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 10, 10, 10, 10, 10}}
     screen_height = (quad.twidth * #Tilemap)
     screen_width = (quad.theight * #Tilemap[1])
-    -- love.window.setMode(screen_width, screen_height)
+    love.window.setMode(screen_width, screen_height)
     effect = moonshine(screen_width, screen_height, moonshine.effects.crt).chain(moonshine.effects.scanlines) -- .chain(moonshine.effects.pixelate)
     effect.crt.distortionFactor = {1.06, 1.065}
     effect.scanlines.width = 1
@@ -240,7 +240,6 @@ function love.updateEverySecond()
 end
 
 function love.draw()
-    -- love.graphics.scale(0.9,0.9)
     love.graphics.setDefaultFilter("nearest", "nearest")
     effect(function()
         local switch = {
@@ -266,7 +265,7 @@ function love.draw()
             ["gameOver"] = function()
                 -- print("game over")
                 love.graphics.printf("Game Over :(\nYou killed " .. game.killed ..
-                                         " furballs...\nrestart the program to play again.", 0, screen_height / 2.5,
+                                         " furballs...\npress any key to play again.", 0, screen_height / 2.5,
                     screen_width, 'center')
             end
         }
