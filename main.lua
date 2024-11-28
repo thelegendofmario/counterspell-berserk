@@ -83,13 +83,13 @@ function love.load()
 
     enemies = {}
     enemy = spawnEnemy(Tilemap)
-    print(enemy, "hi")
+    --print(enemy, "hi")
     table.insert(enemies, enemy)
-    for i, j in ipairs(enemies) do
+    --[[for i, j in ipairs(enemies) do
         print(j)
-    end
+    end]]
     
-    print(enemies, "no")
+    --print(enemies, "no")
 end
 
 function love.keypressed(k)
@@ -140,7 +140,7 @@ function love.keypressed(k)
         ["gameOver"] = function()
         end
     }
-    if k == "j" then
+    --[[if k == "j" then
         enemy = spawnEnemy(Tilemap)
         print(enemy, "hi")
         table.insert(enemies, enemy)
@@ -148,7 +148,7 @@ function love.keypressed(k)
             print(j)
         end
         print(#enemies, "no")
-    end
+    end]]
     switch[game.state]()
 end
 
