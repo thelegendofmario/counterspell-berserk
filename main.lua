@@ -167,12 +167,17 @@ function love.update(dt)
                         if sword.x >= enemy.tile_x * quad.twidth - quad.twidth - 8 and sword.x <= enemy.tile_x *
                             quad.twidth + 8 and sword.y >= enemy.tile_y * quad.theight - quad.theight - 8 and sword.y <=
                             enemy.tile_y * quad.theight + 8 then
-                            table.insert(enemies, spawnEnemy(Tilemap, player, swords))
-                            table.remove(enemies, j)
-                            table.remove(swords, i)
-                            game.killed = game.killed + 1
-                            player.swords = player.swords + 1
-                            berserkBar.count = berserkBar.count + 1
+                            -- check for a rebound
+                            if math.random() < enemy.rebound_chance then
+                                -- change the swords direction by 180
+                                sword.speed.x = -sword.speed.x
+                                sword.speed.y = -sword.speed.y
+                            else
+                                table.remove(enemies, j)
+                                game.killed = game.killed + 1
+                                berserkBar.count = berserkBar.count + 1
+                                table.insert(enemies, spawnEnemy(Tilemap --[[, player, swords]] ))
+                            end
                         end
                     end
                 end

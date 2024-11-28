@@ -3,6 +3,7 @@ enemy.tile_x = 6
 enemy.tile_y = 4
 enemy.image = love.graphics.newImage('resources/sprites/enemy.png')
 enemy.speed = 1
+enemy.rebound_chance = math.max(0.15, math.random())
 
 function enemy:update(player, swords)
     local x = self.tile_x
