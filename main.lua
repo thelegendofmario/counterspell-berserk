@@ -55,7 +55,7 @@ function love.load()
                {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
                {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
                {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {11, 12, 12, 13, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 10}}
+               {11, 12, 12, 13, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 10, 10, 10, 10}}
     screen_height = (quad.twidth * #Tilemap)
     screen_width = (quad.theight * #Tilemap[1])
     love.window.setMode(screen_width, screen_height)
@@ -78,7 +78,7 @@ function love.load()
     end
 
     enemies = {}
-    table.insert(enemies, spawnEnemy(Tilemap--[[, player, swords]]))
+    table.insert(enemies, spawnEnemy(Tilemap --[[, player, swords]] ))
 end
 
 function love.keypressed(k)
