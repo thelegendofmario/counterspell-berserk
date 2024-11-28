@@ -1,6 +1,7 @@
 ---@diagnostic disable: undefined-global, lowercase-global, redundant-parameter
 local moonshine = require "resources.libraries.moonshine-master"
 
+local spawnOdds = 15
 function isBadEnemySpawn(x, y)
     -- for _, enemy in ipairs(enemies) do
     --     if enemy.tile_x == x and enemy.tile_y == y then
@@ -167,6 +168,8 @@ function love.update(dt)
             berserkBar.count = math.min(10, berserkBar.count - berserkBar.decayRate)
             if berserkBar.count <= 0 then
                 game.state = "gameOver"
+            elseif player.hearts <=0 then
+                game.state = "gameOver"
             end
             for _, enemy in ipairs(enemies) do
                 if player.tile_x == enemy.tile_x and player.tile_y == enemy.tile_y then
@@ -192,10 +195,13 @@ function love.update(dt)
                     sword.y = -0.5
                 else
                     --check for hitting the player
-                    if sword.x >= player.tile_x * quad.twidth - quad.twidth - 8 and sword.x <= player.tile_x *
-                    quad.twidth + 8 and sword.y >= player.tile_y * quad.theight - quad.theight - 8 and sword.y <=
-                    player.tile_y * quad.theight + 8 then
-                        player.hearts = player.hearts - 0.5
+                    if sword.x >= player.tile_x * quad.twidth - quad.twidth - 3 and sword.x <= player.tile_x *
+                    quad.twidth + 3 and sword.y >= player.tile_y * quad.theight - quad.theight - 3 and sword.y <=
+                    player.tile_y * quad.theight + 3 then
+                        player.hearts = player.hearts - 1
+                        sword.x = sword.x + 4
+                        table.remove(swords, i)
+                        player.swords = player.swords + 1
                         --table.remove(swords, i)
                     end
                     
@@ -241,10 +247,13 @@ function love.updateEverySecond()
     for i, enemy in ipairs(enemies) do
         update_enemies(enemy)
     end
+    if math.random(spawnOdds) == 1 then
+        table.insert(enemies, spawnEnemy(Tilemap))
+    end
 end
 
 function love.draw()
-    effect(function ()  
+    effect(function ()
         local switch = {
             ["menu"] = function()
                 love.graphics.draw(love.graphics.newImage("resources/sprites/title-screen.png"), 0, 0)
@@ -266,8 +275,9 @@ function love.draw()
                 player:drawHearts()
             end,
             ["gameOver"] = function()
-                love.graphics.printf("Game Over :(\nYou killed " .. game.killed .. " furballs", 0, screen_height / 3,
-                    screen_width - 100, 'center')
+                --print("game over")
+                love.graphics.printf("Game Over :(\nYou killed " .. game.killed .. " furballs...\nrestart the program to play again.", 0, screen_height / 2.5,
+                    screen_width, 'center')
             end
         }
 
