@@ -118,6 +118,7 @@ function love.keypressed(k)
                             x = dir.x * 4,
                             y = dir.y * 4
                         },
+                        timeOut = 5 + 4 * math.random(),
                         frame = 1
                     }
                     table.insert(swords, sword)
@@ -147,11 +148,12 @@ function love.update(dt)
                 sword.x = sword.x + sword.speed.x
                 sword.y = sword.y + sword.speed.y
                 sword.frame = (sword.frame + 0.4) % 17
-                --[[if sword.x < -0.5 * quad.twidth or sword.x > screen_width or sword.y < -0.5 * quad.theight or sword.y >
-                    screen_height then
+                sword.timeOut = sword.timeOut - dt
+
+                if sword.timeOut <= 0 then
                     table.remove(swords, i)
-                    player.swords = player.swords + 1]]
-                if sword.x < -0.5 * quad.twidth and sword.dir == "left" then
+                    player.swords = player.swords + 1
+                elseif sword.x < -0.5 * quad.twidth and sword.dir == "left" then
                     sword.x = screen_width
                 elseif sword.x > screen_width and sword.dir == "right" then
                     sword.x = -0.5
