@@ -59,7 +59,15 @@ function init_vars()
     screen_height = (quad.twidth * #Tilemap)
     screen_width = (quad.theight * #Tilemap[1])
     love.window.setMode(screen_width, screen_height)
-    effect = moonshine(screen_width, screen_height, moonshine.effects.crt).chain(moonshine.effects.scanlines) -- .chain(moonshine.effects.pixelate)
+    effect = moonshine(screen_width, screen_height, moonshine.effects.glow).chain(moonshine.effects.crt).chain(
+                 moonshine.effects.vignette).chain(moonshine.effects.scanlines)
+
+    effect.glow.min_luma = 0.9
+    effect.glow.strength = 3
+
+    effect.vignette.radius = 1.2
+    effect.vignette.softness = 0.9
+
     effect.crt.distortionFactor = {1.06, 1.065}
     effect.scanlines.width = 1
     berserkBar = {
