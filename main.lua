@@ -21,9 +21,13 @@ function isBadEnemySpawn(x, y)
 end
 
 function spawnEnemy(tilemap)
-    local enemy
+    local enemy = {}
     repeat
-        enemy = require 'resources.enemy'
+        enemy.image = love.graphics.newImage('resources/sprites/enemy.png')
+        enemy.speed = 1
+        enemy.damage = 1
+        enemy.rebound_chance = math.min(math.max(0.15, math.random()), 0.3)
+        --enemy = require 'resources.enemy'
         enemy.tile_x = math.random(1, #Tilemap[1])
         enemy.tile_y = math.random(1, #Tilemap)
     until tilemap[enemy.tile_y][enemy.tile_x] == 5 and not isBadEnemySpawn(enemy.tile_x, enemy.tile_y)
@@ -55,13 +59,13 @@ function love.load()
                {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
                {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
                {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {11, 12, 12, 13, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 10, 10, 10, 10}}
+               {11, 12, 12, 13, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 10, 10, 10, 10, 10}}
     screen_height = (quad.twidth * #Tilemap)
     screen_width = (quad.theight * #Tilemap[1])
     love.window.setMode(screen_width, screen_height)
     berserkBar = {
         count = 3,
-        decayRate = 0.004
+        decayRate =  0.004
     }
 
     function berserkBar:draw()
@@ -78,7 +82,14 @@ function love.load()
     end
 
     enemies = {}
-    table.insert(enemies, spawnEnemy(Tilemap --[[, player, swords]] ))
+    enemy = spawnEnemy(Tilemap)
+    print(enemy, "hi")
+    table.insert(enemies, enemy)
+    for i, j in ipairs(enemies) do
+        print(j)
+    end
+    
+    print(enemies, "no")
 end
 
 function love.keypressed(k)
@@ -129,7 +140,15 @@ function love.keypressed(k)
         ["gameOver"] = function()
         end
     }
-
+    if k == "j" then
+        enemy = spawnEnemy(Tilemap)
+        print(enemy, "hi")
+        table.insert(enemies, enemy)
+        for i, j in ipairs(enemies) do
+            print(j)
+        end
+        print(#enemies, "no")
+    end
     switch[game.state]()
 end
 
@@ -145,7 +164,7 @@ function love.update(dt)
             end
             for _, enemy in ipairs(enemies) do
                 if player.tile_x == enemy.tile_x and player.tile_y == enemy.tile_y then
-                    game.state = "gameOver"
+                    player.hearts = player.hearts - enemy.damage
                 end
             end
             for i, sword in ipairs(swords) do
@@ -206,7 +225,7 @@ end
 function love.updateEverySecond()
     -- Code to be executed every second
     for i, enemy in ipairs(enemies) do
-        enemy:update(player, swords)
+        update_enemies(enemy)
     end
 end
 
@@ -229,6 +248,7 @@ function love.draw()
                 player.tile_y * quad.theight - quad.theight)
             berserkBar:draw()
             player:drawBar()
+            player:drawHearts()
         end,
         ["gameOver"] = function()
             love.graphics.printf("Game Over :(\nYou killed " .. game.killed .. " furballs", 0, screen_height / 3,
@@ -237,4 +257,33 @@ function love.draw()
     }
 
     switch[game.state]()
+end
+
+function update_enemies(target)
+    local x = target.tile_x
+    local y = target.tile_y
+
+    -- pick a random direction and then randomly decide to move in that direction
+    local direction = math.random(4)
+    if direction == 1 then
+        y = y - target.speed
+    end
+    if direction == 2 then
+        y = y + target.speed
+    end
+    if direction == 3 then
+        x = x - target.speed
+    end
+    if direction == 4 then
+        x = x + target.speed
+    end
+
+    if isEmpty(x, y) then
+        target.tile_x = x
+        target.tile_y = y
+    end
+end
+
+function isEmpty(x, y)
+    return Tilemap[y][x] == 5
 end
