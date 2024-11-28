@@ -3,6 +3,7 @@
         "undefined-global",
         "param-type-mismatch",
         "lowercase-global",
-        "deprecated"
+        "deprecated",
+        "unbalanced-assignments"
     ]
 }

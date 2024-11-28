@@ -1,4 +1,6 @@
 ---@diagnostic disable: undefined-global, lowercase-global, redundant-parameter
+local moonshine = require "resources.libraries.moonshine-master"
+
 function isBadEnemySpawn(x, y)
     -- for _, enemy in ipairs(enemies) do
     --     if enemy.tile_x == x and enemy.tile_y == y then
@@ -35,6 +37,7 @@ function spawnEnemy(tilemap)
 end
 
 function love.load()
+    
     dbg_enemy_number = 3
     game = {
         killed = 0,
@@ -63,6 +66,9 @@ function love.load()
     screen_height = (quad.twidth * #Tilemap)
     screen_width = (quad.theight * #Tilemap[1])
     love.window.setMode(screen_width, screen_height)
+    effect = moonshine(screen_width,screen_height, moonshine.effects.crt).chain(moonshine.effects.scanlines)--.chain(moonshine.effects.pixelate)
+    effect.crt.distortionFactor = {1.06, 1.065}
+    effect.scanlines.width = 1
     berserkBar = {
         count = 3,
         decayRate =  0.004
@@ -238,33 +244,35 @@ function love.updateEverySecond()
 end
 
 function love.draw()
-    local switch = {
-        ["menu"] = function()
-            love.graphics.draw(love.graphics.newImage("resources/sprites/title-screen.png"), 0, 0)
-        end,
-        ["playing"] = function()
-            quad:draw(Tilemap)
-            for i, j in ipairs(swords) do
-                love.graphics.draw(love.graphics.newImage("resources/sprites/sword/sword" .. math.floor(j.frame + 1) ..
-                                                              ".png"), j.x, j.y)
+    effect(function ()  
+        local switch = {
+            ["menu"] = function()
+                love.graphics.draw(love.graphics.newImage("resources/sprites/title-screen.png"), 0, 0)
+            end,
+            ["playing"] = function()
+                quad:draw(Tilemap)
+                for i, j in ipairs(swords) do
+                    love.graphics.draw(love.graphics.newImage("resources/sprites/sword/sword" .. math.floor(j.frame + 1) ..
+                                                                ".png"), j.x, j.y)
+                end
+                for i, j in ipairs(enemies) do
+                    love.graphics
+                        .draw(j.image, j.tile_x * quad.twidth - quad.twidth, j.tile_y * quad.theight - quad.theight)
+                end
+                love.graphics.draw(player.image, player.tile_x * quad.twidth - quad.twidth,
+                    player.tile_y * quad.theight - quad.theight)
+                berserkBar:draw()
+                player:drawBar()
+                player:drawHearts()
+            end,
+            ["gameOver"] = function()
+                love.graphics.printf("Game Over :(\nYou killed " .. game.killed .. " furballs", 0, screen_height / 3,
+                    screen_width - 100, 'center')
             end
-            for i, j in ipairs(enemies) do
-                love.graphics
-                    .draw(j.image, j.tile_x * quad.twidth - quad.twidth, j.tile_y * quad.theight - quad.theight)
-            end
-            love.graphics.draw(player.image, player.tile_x * quad.twidth - quad.twidth,
-                player.tile_y * quad.theight - quad.theight)
-            berserkBar:draw()
-            player:drawBar()
-            player:drawHearts()
-        end,
-        ["gameOver"] = function()
-            love.graphics.printf("Game Over :(\nYou killed " .. game.killed .. " furballs", 0, screen_height / 3,
-                screen_width - 100, 'center')
-        end
-    }
+        }
 
-    switch[game.state]()
+        switch[game.state]()
+    end)
 end
 
 function update_enemies(target)
