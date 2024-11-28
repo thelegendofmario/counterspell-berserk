@@ -37,7 +37,7 @@ function spawnEnemy(tilemap)
     return enemy
 end
 
-function love.load()
+function init_vars()
     
     dbg_enemy_number = 3
     game = {
@@ -47,6 +47,8 @@ function love.load()
     love.graphics.setNewFont(60)
     swords = {}
     player = require 'resources.player'
+    player.hearts = 5
+    
     quad = require 'resources.quadify'
     quad:set_image("resources/sprites/tiles.png", 3, 5)
     quad:make_quads()
@@ -99,6 +101,10 @@ function love.load()
     --print(enemies, "no")
 end
 
+function love.load()
+    init_vars()
+end
+
 function love.keypressed(k)
     local switch = {
         ["menu"] = function()
@@ -145,6 +151,9 @@ function love.keypressed(k)
             end
         end,
         ["gameOver"] = function()
+            
+            game.state = "menu"
+            init_vars()
         end
     }
     --[[if k == "j" then
@@ -156,7 +165,11 @@ function love.keypressed(k)
         end
         print(#enemies, "no")
     end]]
-    switch[game.state]()
+    if k == "q" then
+        love.event.quit()
+    else
+        switch[game.state]()
+    end
 end
 
 local timer = 0
@@ -236,6 +249,7 @@ function love.update(dt)
             end
         end,
         ["gameOver"] = function()
+            
         end
     }
     
