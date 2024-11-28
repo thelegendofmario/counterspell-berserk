@@ -18,8 +18,13 @@ function isBadEnemySpawn(x, y)
 end
 
 function spawnEnemy(tilemap)
-    local enemy = require 'resources.enemy'
+    local enemy = {}
     repeat
+        enemy.image = love.graphics.newImage('resources/sprites/enemy.png')
+        enemy.speed = 1
+        enemy.damage = 1
+        enemy.rebound_chance = math.min(math.max(0.15, math.random()), 0.3)
+        --enemy = require 'resources.enemy'
         enemy.tile_x = math.random(1, #Tilemap[1])
         enemy.tile_y = math.random(1, #Tilemap)
     until tilemap[enemy.tile_y][enemy.tile_x] == 5 and not isBadEnemySpawn(enemy.tile_x, enemy.tile_y)
@@ -79,7 +84,7 @@ function init_vars()
                 screen_height - 64)
         end
     end
-
+    player.swords = 5
     enemies = {}
     enemy = spawnEnemy(Tilemap)
     table.insert(enemies, enemy)
@@ -137,6 +142,7 @@ function love.keypressed(k)
         ["gameOver"] = function()
 
             game.state = "menu"
+            print 'restarting'
             init_vars()
         end
     }
