@@ -143,7 +143,11 @@ function love.update(dt)
             if berserkBar.count <= 0 then
                 game.state = "gameOver"
             end
-
+            for _, enemy in ipairs(enemies) do
+                if player.tile_x == enemy.tile_x and player.tile_y == enemy.tile_y then
+                    game.state = "gameOver"
+                end
+            end
             for i, sword in ipairs(swords) do
                 sword.x = sword.x + sword.speed.x
                 sword.y = sword.y + sword.speed.y
