@@ -37,6 +37,7 @@ function init_vars()
     swords = {}
     player = require 'resources.player'
     player.hearts = 5
+    player.heartRegenAmount = 0.01
 
     quad = require 'resources.quadify'
     quad:set_image("resources/sprites/tiles.png", 3, 5)
@@ -152,6 +153,7 @@ function love.update(dt)
         ["menu"] = function()
         end,
         ["playing"] = function()
+            player.hearts = math.min(5, player.hearts + player.heartRegenAmount)
             berserkBar.count = math.min(10, berserkBar.count - berserkBar.decayRate)
             if berserkBar.count <= 0 then
                 game.state = "gameOver"
