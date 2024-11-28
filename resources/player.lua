@@ -30,7 +30,7 @@ function player:update(k)
 end
 
 function player:drawHearts()
-    for i = 0, self.hearts do
+    for i = 0, math.ceil(self.hearts) do
         love.graphics.draw(love.graphics.newImage("resources/sprites/player-heart.png"), 0 + i * 62, 0)
     end
 end

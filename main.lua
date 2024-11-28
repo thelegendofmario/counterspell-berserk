@@ -185,6 +185,14 @@ function love.update(dt)
                 elseif sword.y > screen_height and sword.dir == "down" then
                     sword.y = -0.5
                 else
+                    --check for hitting the player
+                    if sword.x >= player.tile_x * quad.twidth - quad.twidth - 8 and sword.x <= player.tile_x *
+                    quad.twidth + 8 and sword.y >= player.tile_y * quad.theight - quad.theight - 8 and sword.y <=
+                    player.tile_y * quad.theight + 8 then
+                        player.hearts = player.hearts - 0.5
+                        --table.remove(swords, i)
+                    end
+                    
                     -- check if it is killing an enemy
                     for j, enemy in ipairs(enemies) do
                         if sword.x >= enemy.tile_x * quad.twidth - quad.twidth - 8 and sword.x <= enemy.tile_x *
@@ -202,7 +210,7 @@ function love.update(dt)
                                 table.remove(enemies, j)
                                 game.killed = game.killed + 1
                                 berserkBar.count = berserkBar.count + 1
-                                table.insert(enemies, spawnEnemy(Tilemap --[[, player, swords]] ))
+                                table.insert(enemies, spawnEnemy(Tilemap))
                             end
                         end
                     end
