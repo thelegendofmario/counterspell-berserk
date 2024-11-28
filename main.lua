@@ -1,4 +1,40 @@
 ---@diagnostic disable: undefined-global, lowercase-global, redundant-parameter
+function switch_sword(swrd,dir)
+    
+    local directions = {
+        left = {
+            x = -1,
+            y = 0
+        },
+        right = {
+            x = 1,
+            y = 0
+        },
+        up = {
+            x = 0,
+            y = -1
+        },
+        down = {
+            x = 0,
+            y = 1
+        }
+    }
+
+    local direc = directions[dir]
+    if direc then
+            swrd.dir = direc
+            --swrd.x = (swrd.x - 1 + swrd.dir.x) * quad.twidth
+            --swrd.y = (swrd.y - 1 + srd.dir.y) * quad.theight
+            swrd.speed = {
+                x = swrd.dir.x * 4,
+                y = swrd.dir.y * 4
+            }
+            --swrd.frame = 1
+        --table.insert(swords, sword)
+        --player.swords = player.swords - 1
+    end
+end
+
 function isBadEnemySpawn(x, y)
     -- for _, enemy in ipairs(enemies) do
     --     if enemy.tile_x == x and enemy.tile_y == y then
@@ -89,6 +125,7 @@ function love.keypressed(k)
         ["playing"] = function()
             player:update(k)
             if player.swords > 0 then
+                
                 local directions = {
                     left = {
                         x = -1,
@@ -118,7 +155,8 @@ function love.keypressed(k)
                             x = dir.x * 4,
                             y = dir.y * 4
                         },
-                        frame = 1
+                        frame = 1,
+                        rebounded = false
                     }
                     table.insert(swords, sword)
                     player.swords = player.swords - 1
@@ -128,7 +166,7 @@ function love.keypressed(k)
         ["gameOver"] = function()
         end
     }
-
+    
     switch[game.state]()
 end
 
@@ -167,10 +205,27 @@ function love.update(dt)
                             enemy.tile_y * quad.theight + 8 then
                             table.insert(enemies, spawnEnemy(Tilemap, player, swords))
                             table.remove(enemies, j)
-                            table.remove(swords, i)
+
+                            --print(sword.dir)
                             game.killed = game.killed + 1
                             player.swords = player.swords + 1
                             berserkBar.count = berserkBar.count + 1
+                            if sword.dir == "left" then
+                                switch_sword(sword, "right")
+                            elseif sword.dir == "right" then
+                                switch_sword(sword, "left")
+                            elseif sword.dir == "up" then
+                                switch_sword(sword, "down")
+                            elseif sword.dir == "down" then
+                                switch_sword(sword, "up")
+                            end
+                            if sword.rebounded == true then
+                                table.remove(swords, i)
+                                print('lol')
+                                --sword.rebounded = false
+                            else
+                                sword.rebounded = true
+                            end
                         end
                     end
                 end
