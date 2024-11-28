@@ -1,4 +1,4 @@
----@diagnostic disable: undefined-global, lowercase-global
+---@diagnostic disable: undefined-global, lowercase-global, redundant-parameter
 function isBadEnemySpawn(x, y)
     -- for _, enemy in ipairs(enemies) do
     --     if enemy.tile_x == x and enemy.tile_y == y then
@@ -31,6 +31,7 @@ function spawnEnemy(tilemap)
 end
 
 function love.load()
+    dbg_enemy_number = 3
     game = {
         killed = 0,
         state = "menu"
@@ -77,7 +78,7 @@ function love.load()
     end
 
     enemies = {}
-    table.insert(enemies, spawnEnemy(Tilemap, player, swords))
+    table.insert(enemies, spawnEnemy(Tilemap--[[, player, swords]]))
 end
 
 function love.keypressed(k)
@@ -146,10 +147,18 @@ function love.update(dt)
                 sword.x = sword.x + sword.speed.x
                 sword.y = sword.y + sword.speed.y
                 sword.frame = (sword.frame + 0.4) % 17
-                if sword.x < -0.5 * quad.twidth or sword.x > screen_width or sword.y < -0.5 * quad.theight or sword.y >
+                --[[if sword.x < -0.5 * quad.twidth or sword.x > screen_width or sword.y < -0.5 * quad.theight or sword.y >
                     screen_height then
                     table.remove(swords, i)
-                    player.swords = player.swords + 1
+                    player.swords = player.swords + 1]]
+                if sword.x < -0.5 * quad.twidth and sword.dir == "left" then
+                    sword.x = screen_width
+                elseif sword.x > screen_width and sword.dir == "right" then
+                    sword.x = -0.5
+                elseif sword.y < -0.5 * quad.theight and sword.dir == "up" then
+                    sword.y = screen_height
+                elseif sword.y > screen_height and sword.dir == "down" then
+                    sword.y = -0.5
                 else
                     -- check if it is killing an enemy
                     for j, enemy in ipairs(enemies) do
