@@ -7,3 +7,5 @@ find . -type f \( -name "*.lua" -o -name "*.png" -o -name "*.mp3" \) -print | zi
 bunx love.js berserk.love berserk -c
 
 scp -r berserk hackclub.app:/home/kierank/berserk
+
+rm -rf berserk.love berserk
