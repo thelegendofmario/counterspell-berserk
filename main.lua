@@ -169,9 +169,12 @@ function love.update(dt)
                             enemy.tile_y * quad.theight + 8 then
                             -- check for a rebound
                             if math.random() < enemy.rebound_chance then
-                                -- change the swords direction by 180
-                                sword.speed.x = -sword.speed.x
-                                sword.speed.y = -sword.speed.y
+                                -- change the sword's direction by 180 degrees with a random deviation
+                                local angle = math.atan2(sword.speed.y, sword.speed.x)
+                                local deviation = math.rad(math.random(-55, 55))
+                                angle = angle + math.pi + deviation
+                                sword.speed.x = 4 * math.cos(angle)
+                                sword.speed.y = 4 * math.sin(angle)
                             else
                                 table.remove(enemies, j)
                                 game.killed = game.killed + 1
