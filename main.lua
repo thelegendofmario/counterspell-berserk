@@ -3,12 +3,6 @@ local moonshine = require "resources.libraries.moonshine-master"
 
 local spawnOdds = 15
 function isBadEnemySpawn(x, y)
-    -- for _, enemy in ipairs(enemies) do
-    --     if enemy.tile_x == x and enemy.tile_y == y then
-    --         return true
-    --     end
-    -- end
-
     -- check player
     if player.tile_x == x and player.tile_y == y then
         return true
@@ -24,13 +18,8 @@ function isBadEnemySpawn(x, y)
 end
 
 function spawnEnemy(tilemap)
-    local enemy = {}
+    local enemy = require 'resources.enemy'
     repeat
-        enemy.image = love.graphics.newImage('resources/sprites/enemy.png')
-        enemy.speed = 1
-        enemy.damage = 1
-        enemy.rebound_chance = math.min(math.max(0.15, math.random()), 0.3)
-        --enemy = require 'resources.enemy'
         enemy.tile_x = math.random(1, #Tilemap[1])
         enemy.tile_y = math.random(1, #Tilemap)
     until tilemap[enemy.tile_y][enemy.tile_x] == 5 and not isBadEnemySpawn(enemy.tile_x, enemy.tile_y)
@@ -38,7 +27,7 @@ function spawnEnemy(tilemap)
 end
 
 function init_vars()
-    
+
     dbg_enemy_number = 3
     game = {
         killed = 0,
@@ -48,7 +37,7 @@ function init_vars()
     swords = {}
     player = require 'resources.player'
     player.hearts = 5
-    
+
     quad = require 'resources.quadify'
     quad:set_image("resources/sprites/tiles.png", 3, 5)
     quad:make_quads()
@@ -68,13 +57,13 @@ function init_vars()
                {11, 12, 12, 13, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 10, 10, 10, 10, 10}}
     screen_height = (quad.twidth * #Tilemap)
     screen_width = (quad.theight * #Tilemap[1])
-    --love.window.setMode(screen_width, screen_height)
-    effect = moonshine(screen_width,screen_height, moonshine.effects.crt).chain(moonshine.effects.scanlines)--.chain(moonshine.effects.pixelate)
+    -- love.window.setMode(screen_width, screen_height)
+    effect = moonshine(screen_width, screen_height, moonshine.effects.crt).chain(moonshine.effects.scanlines) -- .chain(moonshine.effects.pixelate)
     effect.crt.distortionFactor = {1.06, 1.065}
     effect.scanlines.width = 1
     berserkBar = {
         count = 3,
-        decayRate =  0.004
+        decayRate = 0.004
     }
 
     function berserkBar:draw()
@@ -92,13 +81,7 @@ function init_vars()
 
     enemies = {}
     enemy = spawnEnemy(Tilemap)
-    --print(enemy, "hi")
     table.insert(enemies, enemy)
-    --[[for i, j in ipairs(enemies) do
-        print(j)
-    end]]
-    
-    --print(enemies, "no")
 end
 
 function love.load()
@@ -151,20 +134,11 @@ function love.keypressed(k)
             end
         end,
         ["gameOver"] = function()
-            
+
             game.state = "menu"
             init_vars()
         end
     }
-    --[[if k == "j" then
-        enemy = spawnEnemy(Tilemap)
-        print(enemy, "hi")
-        table.insert(enemies, enemy)
-        for i, j in ipairs(enemies) do
-            print(j)
-        end
-        print(#enemies, "no")
-    end]]
     if k == "q" then
         love.event.quit()
     else
@@ -181,7 +155,7 @@ function love.update(dt)
             berserkBar.count = math.min(10, berserkBar.count - berserkBar.decayRate)
             if berserkBar.count <= 0 then
                 game.state = "gameOver"
-            elseif player.hearts <=0 then
+            elseif player.hearts <= 0 then
                 game.state = "gameOver"
             end
             for _, enemy in ipairs(enemies) do
@@ -207,17 +181,16 @@ function love.update(dt)
                 elseif sword.y > screen_height and sword.dir == "down" then
                     sword.y = -0.5
                 else
-                    --check for hitting the player
+                    -- check for hitting the player
                     if sword.x >= player.tile_x * quad.twidth - quad.twidth - 3 and sword.x <= player.tile_x *
-                    quad.twidth + 3 and sword.y >= player.tile_y * quad.theight - quad.theight - 3 and sword.y <=
-                    player.tile_y * quad.theight + 3 then
+                        quad.twidth + 3 and sword.y >= player.tile_y * quad.theight - quad.theight - 3 and sword.y <=
+                        player.tile_y * quad.theight + 3 then
                         player.hearts = player.hearts - 1
                         sword.x = sword.x + 4
                         table.remove(swords, i)
                         player.swords = player.swords + 1
-                        --table.remove(swords, i)
                     end
-                    
+
                     -- check if it is killing an enemy
                     for j, enemy in ipairs(enemies) do
                         if sword.x >= enemy.tile_x * quad.twidth - quad.twidth - 8 and sword.x <= enemy.tile_x *
@@ -249,10 +222,10 @@ function love.update(dt)
             end
         end,
         ["gameOver"] = function()
-            
+
         end
     }
-    
+
     switch[game.state]()
 end
 
@@ -267,9 +240,9 @@ function love.updateEverySecond()
 end
 
 function love.draw()
-    --love.graphics.scale(0.9,0.9)
+    -- love.graphics.scale(0.9,0.9)
     love.graphics.setDefaultFilter("nearest", "nearest")
-    effect(function ()
+    effect(function()
         local switch = {
             ["menu"] = function()
                 love.graphics.draw(love.graphics.newImage("resources/sprites/title-screen.png"), 0, 0)
@@ -277,12 +250,12 @@ function love.draw()
             ["playing"] = function()
                 quad:draw(Tilemap)
                 for i, j in ipairs(swords) do
-                    love.graphics.draw(love.graphics.newImage("resources/sprites/sword/sword" .. math.floor(j.frame + 1) ..
-                                                                ".png"), j.x, j.y)
+                    love.graphics.draw(love.graphics.newImage(
+                        "resources/sprites/sword/sword" .. math.floor(j.frame + 1) .. ".png"), j.x, j.y)
                 end
                 for i, j in ipairs(enemies) do
-                    love.graphics
-                        .draw(j.image, j.tile_x * quad.twidth - quad.twidth, j.tile_y * quad.theight - quad.theight)
+                    love.graphics.draw(j.image, j.tile_x * quad.twidth - quad.twidth,
+                        j.tile_y * quad.theight - quad.theight)
                 end
                 love.graphics.draw(player.image, player.tile_x * quad.twidth - quad.twidth,
                     player.tile_y * quad.theight - quad.theight)
@@ -291,8 +264,9 @@ function love.draw()
                 player:drawHearts()
             end,
             ["gameOver"] = function()
-                --print("game over")
-                love.graphics.printf("Game Over :(\nYou killed " .. game.killed .. " furballs...\nrestart the program to play again.", 0, screen_height / 2.5,
+                -- print("game over")
+                love.graphics.printf("Game Over :(\nYou killed " .. game.killed ..
+                                         " furballs...\nrestart the program to play again.", 0, screen_height / 2.5,
                     screen_width, 'center')
             end
         }
