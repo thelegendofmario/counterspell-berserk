@@ -33,7 +33,7 @@ function spawnEnemy(tilemap)
 end
 
 function init_vars()
-    TEsound.play("resources/sfx/counterspell.mp3", "stream", "music", 0.1)
+    TEsound.play("resources/sfx/bg_music.wav", "stream", "music", 0.4)
     game = {
         killed = 0,
         state = "menu",
