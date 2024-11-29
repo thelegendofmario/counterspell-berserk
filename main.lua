@@ -210,7 +210,9 @@ function love.update(dt)
             for _, enemy in ipairs(enemies) do
                 if player.tile_x == enemy.tile_x and player.tile_y == enemy.tile_y then
                     player.hearts = player.hearts - enemy.damage
-                    TEsound.play("resources/sfx/hurt1.mp3", "static", "sfx", 0.3)
+                    TEsound.play({"resources/sfx/rock-hit1.mp3", "resources/sfx/rock-hit2.mp3",
+                                  "resources/sfx/rock-hit3.mp3", "resources/sfx/rock-hit4.mp3",
+                                  "resources/sfx/rock-hit5.mp3"}, "static", "sfx", 0.3)
                 end
             end
             for i, sword in ipairs(swords) do
@@ -238,7 +240,9 @@ function love.update(dt)
                         quad.twidth + 3 and sword.y >= player.tile_y * quad.theight - quad.theight - 3 and sword.y <=
                         player.tile_y * quad.theight + 3 then
                         player.hearts = player.hearts - 1
-                        TEsound.play("resources/sfx/hurt1.mp3", "static", "sfx", 0.3)
+                        TEsound.play({"resources/sfx/rock-hit1.mp3", "resources/sfx/rock-hit2.mp3",
+                                      "resources/sfx/rock-hit3.mp3", "resources/sfx/rock-hit4.mp3",
+                                      "resources/sfx/rock-hit5.mp3"}, "static", "sfx", 0.3)
                         sword.x = sword.x + 4
                         table.remove(swords, i)
                         player.swords = player.swords + 1
