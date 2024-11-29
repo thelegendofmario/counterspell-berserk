@@ -233,6 +233,8 @@ function love.update(dt)
                             enemy.tile_y * quad.theight + 8 then
                             -- check for a rebound
                             if math.random() < enemy.rebound_chance then
+                                TEsound.play({"resources/sfx/bounce1.mp3", "resources/sfx/bounce2.mp3",
+                                              "resources/sfx/bounce3.mp3"}, "static", "sfx", 0.4)
                                 -- change the sword's direction by 180 degrees with a random deviation
                                 local angle = math.atan2(sword.speed.y, sword.speed.x)
                                 local deviation = math.rad(math.random(-55, 55))
