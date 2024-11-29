@@ -49,21 +49,9 @@ function init_vars()
         player.tile_y = math.floor(math.random(2, #Tilemap - 1))
     until Tilemap[player.tile_y][player.tile_x] == 5
 
-    berserkBar = {
-        count = 3,
-        decayRate = 0.004
-    }
-
-    function berserkBar:draw()
-        for i = 1, math.ceil(berserkBar.count) do
-            love.graphics.draw(love.graphics.newImage("resources/sprites/berserk-star.png"), 49 + i * 12,
-                screen_height - 39)
-        end
-    end
     function player:drawBar()
         for i = 1, self.swords do
-            love.graphics.draw(love.graphics.newImage("resources/sprites/sword.png"), screen_width - i * 62,
-                screen_height - 64)
+            love.graphics.draw(love.graphics.newImage("resources/sprites/sword.png"), screen_width - i * 62, 0)
         end
     end
     enemies = {}
@@ -90,7 +78,7 @@ function love.load()
                {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
                {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
                {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {11, 12, 12, 13, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 10, 10, 10, 10, 10}}
+               {8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8}}
     screen_height = (quad.twidth * #Tilemap)
     screen_width = (quad.theight * #Tilemap[1])
     love.window.setMode(screen_width, screen_height)
@@ -189,11 +177,7 @@ function love.update(dt)
         end,
         ["playing"] = function()
             player.hearts = math.min(5, player.hearts + player.heartRegenAmount)
-            berserkBar.count = math.min(10, berserkBar.count - berserkBar.decayRate)
-            if berserkBar.count <= 0 then
-                game.state = "gameOver"
-                game.deathMessage = "You ran out of berserk ^-^"
-            elseif player.hearts <= 0 then
+            if player.hearts <= 0 then
                 game.state = "gameOver"
                 game.deathMessage = "You ran out of hearts :("
             end
@@ -281,7 +265,6 @@ function love.update(dt)
                                 TEsound.play({"resources/sfx/enemy-die1.mp3"}, "static", "sfx", 0.3)
                                 table.remove(enemies, j)
                                 game.killed = game.killed + 1
-                                berserkBar.count = berserkBar.count + 1
                                 table.insert(enemies, spawnEnemy(Tilemap))
                             end
                         end
@@ -332,7 +315,6 @@ function love.draw()
                 end
                 love.graphics.draw(player.image, player.tile_x * quad.twidth - quad.twidth,
                     player.tile_y * quad.theight - quad.theight)
-                berserkBar:draw()
                 player:drawBar()
                 player:drawHearts()
             end,
