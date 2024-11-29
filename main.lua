@@ -237,6 +237,7 @@ function love.update(dt)
                                 sword.speed.x = 4 * math.cos(angle)
                                 sword.speed.y = 4 * math.sin(angle)
                             else
+                                TEsound.play({"resources/sfx/enemy-die1.mp3"}, "static", "sfx", 0.3)
                                 table.remove(enemies, j)
                                 game.killed = game.killed + 1
                                 berserkBar.count = berserkBar.count + 1
