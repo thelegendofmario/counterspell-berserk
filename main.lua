@@ -168,7 +168,7 @@ function love.keypressed(k)
             if game.gameOverCoolDown > 0 then
                 return
             end
-            game.state = "menu"
+            game.state = "playing"
             print 'restarting'
             init_vars()
         end
@@ -317,18 +317,18 @@ function love.draw()
             end,
             ["gameOver"] = function()
                 -- print("game over")
-                local message = "Game Over\n" .. game.deathMessage
+                local message = "Game Over\n\n" .. game.deathMessage
                 if game.gameOverCoolDown > 0 then
                     message = message .. "\n\n" .. math.ceil(game.gameOverCoolDown)
                 else
                     message = message .. "\n\npress any key to play again..."
                 end
 
-                love.graphics.printf("Game Over\n" .. message, 0, screen_height / 4, screen_width, 'center')
+                love.graphics.printf(message, 0, screen_height / 4, screen_width, 'center')
 
                 -- cooldown bar
                 love.graphics.rectangle("fill", screen_width / 6, screen_height - 80,
-                    screen_width * game.gameOverCoolDown / 3 / 1.5, 20)
+                    screen_width * game.gameOverCoolDown / 6, 20)
             end
         }
 
