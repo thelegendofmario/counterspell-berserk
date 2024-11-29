@@ -37,7 +37,9 @@ function init_vars()
     game = {
         killed = 0,
         state = "menu",
-        totalSpawnedEnemy = 0
+        totalSpawnedEnemy = 0,
+        deathMessage = "",
+        gameOverCoolDown = 4
     }
     swords = {}
     player.hearts = 5
@@ -163,8 +165,9 @@ function love.keypressed(k)
             end
         end,
         ["gameOver"] = function()
-            TEsound.stop("sfx")
-            TEsound.stop("music")
+            if game.gameOverCoolDown > 0 then
+                return
+            end
             game.state = "menu"
             print 'restarting'
             init_vars()
@@ -188,9 +191,21 @@ function love.update(dt)
             berserkBar.count = math.min(10, berserkBar.count - berserkBar.decayRate)
             if berserkBar.count <= 0 then
                 game.state = "gameOver"
+                game.deathMessage = "You ran out of berserk ^-^"
             elseif player.hearts <= 0 then
                 game.state = "gameOver"
+                game.deathMessage = "You ran out of hearts :("
             end
+
+            if game.state == "gameOver" then
+                if game.killed == 0 then
+                    game.deathMessage = game.deathMessage .. "\nYou didn't kill any furballs..."
+                else
+                    game.deathMessage = game.deathMessage .. "\nYou killed " .. game.killed .. " furballs..."
+                end
+                return
+            end
+
             for _, enemy in ipairs(enemies) do
                 if player.tile_x == enemy.tile_x and player.tile_y == enemy.tile_y then
                     player.hearts = player.hearts - enemy.damage
@@ -260,6 +275,7 @@ function love.update(dt)
             end
         end,
         ["gameOver"] = function()
+            game.gameOverCoolDown = math.max(0, game.gameOverCoolDown - dt)
         end
     }
 
@@ -301,9 +317,18 @@ function love.draw()
             end,
             ["gameOver"] = function()
                 -- print("game over")
-                love.graphics.printf("Game Over :(\nYou killed " .. game.killed ..
-                                         " furballs...\npress any key to play again.", 0, screen_height / 2.5,
-                    screen_width, 'center')
+                local message = "Game Over\n" .. game.deathMessage
+                if game.gameOverCoolDown > 0 then
+                    message = message .. "\n\n" .. math.ceil(game.gameOverCoolDown)
+                else
+                    message = message .. "\n\npress any key to play again..."
+                end
+
+                love.graphics.printf("Game Over\n" .. message, 0, screen_height / 4, screen_width, 'center')
+
+                -- cooldown bar
+                love.graphics.rectangle("fill", screen_width / 6, screen_height - 80,
+                    screen_width * game.gameOverCoolDown / 3 / 1.5, 20)
             end
         }
 
