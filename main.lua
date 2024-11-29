@@ -2,7 +2,7 @@
 local moonshine = require "resources.libraries.moonshine-master"
 require "resources.libraries.TEsound"
 
-local spawnOdds = 15
+local spawnOdds = 10
 function isBadEnemySpawn(x, y)
     -- check player
     if player.tile_x == x and player.tile_y == y then
@@ -33,6 +33,9 @@ function spawnEnemy(tilemap)
 end
 
 function init_vars()
+    mapgen = require 'resources.mapgen'
+    Tilemap = mapgen:genMap(21,14)
+    player = require 'resources.player'
     TEsound.play("resources/sfx/bg_music.wav", "stream", "music", 0.4)
     game = {
         killed = 0,
@@ -60,30 +63,18 @@ function init_vars()
 end
 
 function love.load()
+    init_vars()
     love.graphics.setNewFont(60)
 
     quad = require 'resources.quadify'
     quad:set_image("resources/sprites/tiles.png", 3, 4)
     quad:make_quads()
-    Tilemap = {{1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
-               {8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8}}
+    
     screen_height = (quad.twidth * #Tilemap)
     screen_width = (quad.theight * #Tilemap[1])
     love.window.setMode(screen_width, screen_height)
     effect = moonshine(screen_width, screen_height, moonshine.effects.glow).chain(moonshine.effects.crt).chain(
-                 moonshine.effects.vignette).chain(moonshine.effects.scanlines)
+             moonshine.effects.vignette).chain(moonshine.effects.scanlines)
 
     effect.glow.min_luma = 0.9
     effect.glow.strength = 3
@@ -94,9 +85,7 @@ function love.load()
     effect.crt.distortionFactor = {1.06, 1.065}
     effect.scanlines.width = 1
 
-    player = require 'resources.player'
 
-    init_vars()
 end
 
 function love.keypressed(k)
