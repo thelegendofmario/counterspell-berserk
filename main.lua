@@ -1,5 +1,6 @@
 ---@diagnostic disable: undefined-global, lowercase-global, redundant-parameter
 local moonshine = require "resources.libraries.moonshine-master"
+require "resources.libraries.TEsound"
 
 local spawnOdds = 15
 function isBadEnemySpawn(x, y)
@@ -34,7 +35,8 @@ end
 function init_vars()
     game = {
         killed = 0,
-        state = "menu"
+        state = "menu",
+        totalSpawnedEnemy = 0
     }
     swords = {}
     player.hearts = 5
@@ -143,11 +145,17 @@ function love.keypressed(k)
                             x = dir.x * 4,
                             y = dir.y * 4
                         },
-                        timeOut = 5 + 4 * math.random(),
-                        frame = 1
+                        timeOut = 2.5,
+                        frame = 1,
+                        name = "sword" .. game.totalSpawnedEnemy
                     }
+
                     table.insert(swords, sword)
+                    game.totalSpawnedEnemy = game.totalSpawnedEnemy + 1
                     player.swords = player.swords - 1
+                    TEsound.play({"resources/sfx/swing-whoosh1.mp3", "resources/sfx/swing-whoosh2.mp3"}, "static",
+                        "sfx", 0.3)
+                    TEsound.play("resources/sfx/spin-whoosh1.mp3", "static", {sword.name, "sfx"}, 0.01)
                 end
             end
         end,
@@ -166,6 +174,7 @@ end
 
 local timer = 0
 function love.update(dt)
+    TEsound.cleanup()
     local switch = {
         ["menu"] = function()
         end,
@@ -189,6 +198,7 @@ function love.update(dt)
                 sword.timeOut = sword.timeOut - dt
 
                 if sword.timeOut <= 0 then
+                    TEsound.stop(sword.name)
                     table.remove(swords, i)
                     player.swords = player.swords + 1
                 elseif sword.x < -0.5 * quad.twidth and sword.dir == "left" then
@@ -241,7 +251,7 @@ function love.update(dt)
             end
         end,
         ["gameOver"] = function()
-
+            TEsound.stop("sfx")
         end
     }
 
