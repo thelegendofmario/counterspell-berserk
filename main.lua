@@ -24,7 +24,7 @@ function spawnEnemy(tilemap)
         enemy.speed = 1
         enemy.damage = 1
         enemy.rebound_chance = math.min(math.max(0.15, math.random()), 0.3)
-        --enemy = require 'resources.enemy'
+        -- enemy = require 'resources.enemy'
         enemy.tile_x = math.random(1, #Tilemap[1])
         enemy.tile_y = math.random(1, #Tilemap)
     until tilemap[enemy.tile_y][enemy.tile_x] == 5 and not isBadEnemySpawn(enemy.tile_x, enemy.tile_y)
@@ -32,17 +32,40 @@ function spawnEnemy(tilemap)
 end
 
 function init_vars()
-
-    dbg_enemy_number = 3
     game = {
         killed = 0,
         state = "menu"
     }
-    love.graphics.setNewFont(60)
     swords = {}
-    player = require 'resources.player'
     player.hearts = 5
-    player.heartRegenAmount = 0.01
+    player.swords = 5
+    player.tile_x = math.floor(math.random(1, #Tilemap[1]))
+    player.tile_y = math.floor(math.random(1, #Tilemap))
+
+    berserkBar = {
+        count = 3,
+        decayRate = 0.004
+    }
+
+    function berserkBar:draw()
+        for i = 1, math.ceil(berserkBar.count) do
+            love.graphics.draw(love.graphics.newImage("resources/sprites/berserk-star.png"), 49 + i * 12,
+                screen_height - 39)
+        end
+    end
+    function player:drawBar()
+        for i = 1, self.swords do
+            love.graphics.draw(love.graphics.newImage("resources/sprites/sword.png"), screen_width - i * 62,
+                screen_height - 64)
+        end
+    end
+    enemies = {}
+    enemy = spawnEnemy(Tilemap)
+    table.insert(enemies, enemy)
+end
+
+function love.load()
+    love.graphics.setNewFont(60)
 
     quad = require 'resources.quadify'
     quad:set_image("resources/sprites/tiles.png", 3, 5)
@@ -75,30 +98,9 @@ function init_vars()
 
     effect.crt.distortionFactor = {1.06, 1.065}
     effect.scanlines.width = 1
-    berserkBar = {
-        count = 3,
-        decayRate = 0.004
-    }
 
-    function berserkBar:draw()
-        for i = 1, math.ceil(berserkBar.count) do
-            love.graphics.draw(love.graphics.newImage("resources/sprites/berserk-star.png"), 49 + i * 12,
-                screen_height - 39)
-        end
-    end
-    function player:drawBar()
-        for i = 1, self.swords do
-            love.graphics.draw(love.graphics.newImage("resources/sprites/sword.png"), screen_width - i * 62,
-                screen_height - 64)
-        end
-    end
-    player.swords = 5
-    enemies = {}
-    enemy = spawnEnemy(Tilemap)
-    table.insert(enemies, enemy)
-end
+    player = require 'resources.player'
 
-function love.load()
     init_vars()
 end
 
@@ -148,7 +150,6 @@ function love.keypressed(k)
             end
         end,
         ["gameOver"] = function()
-
             game.state = "menu"
             print 'restarting'
             init_vars()
