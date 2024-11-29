@@ -137,13 +137,15 @@ function love.keypressed(k)
 
                 local dir = directions[k]
                 if dir then
+                    local speedAdjustment = math.random(-1, 1) * 0.15
                     local sword = {
                         dir = k,
                         x = (player.tile_x - 1 + dir.x) * quad.twidth,
                         y = (player.tile_y - 1 + dir.y) * quad.theight,
+                        speedAdjustment = speedAdjustment,
                         speed = {
-                            x = dir.x * 4,
-                            y = dir.y * 4
+                            x = dir.x * 4 + dir.x * 4 * speedAdjustment,
+                            y = dir.y * 4 + dir.y * 4 * speedAdjustment
                         },
                         timeOut = 2.5,
                         frame = 1,
@@ -192,9 +194,10 @@ function love.update(dt)
                 end
             end
             for i, sword in ipairs(swords) do
-                sword.x = sword.x + sword.speed.x
-                sword.y = sword.y + sword.speed.y
-                sword.frame = (sword.frame + 0.4) % 17
+                local speedMultiplier = 1 + 1 * sword.speedAdjustment + (2.5 - sword.timeOut) * 0.4
+                sword.x = sword.x + sword.speed.x * speedMultiplier
+                sword.y = sword.y + sword.speed.y * speedMultiplier
+                sword.frame = (sword.frame + 0.6 + speedMultiplier / 2) % 17
                 sword.timeOut = sword.timeOut - dt
 
                 if sword.timeOut <= 0 then
