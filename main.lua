@@ -168,9 +168,10 @@ function love.keypressed(k)
             if game.gameOverCoolDown > 0 then
                 return
             end
-            game.state = "playing"
+            TEsound.stop("music")
             print 'restarting'
             init_vars()
+            game.state = "playing"
         end
     }
     if k == "q" then
