@@ -5,6 +5,6 @@ bunx love.js berserk.love berserk -c
 
 scp -r berserk/* hackclub.app:/home/kierank/berserk/
 
-ssh nest.hackclub.app systemctl caddy restart
+ssh nest.hackclub.app "systemctl --user restart caddy"
 
 rm -rf berserk.love berserk
