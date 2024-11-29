@@ -12,7 +12,7 @@ function mapgen:genMap(width, height)
     
     for i = 1, mapgen.tilemap.height do
         if i==1 then
-            mapgen.tilemap.map[i] = {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3}
+            mapgen.tilemap.map[i] = {1,2,2,2,2,2,11,2,2,2,2,2,2,2,2,2,2,2,2,2,3}
         elseif i==mapgen.tilemap.height then
             mapgen.tilemap.map[i] = {8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8}
         else
