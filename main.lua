@@ -63,7 +63,7 @@ function love.load()
     love.graphics.setNewFont(60)
 
     quad = require 'resources.quadify'
-    quad:set_image("resources/sprites/tiles.png", 3, 5)
+    quad:set_image("resources/sprites/tiles.png", 3, 4)
     quad:make_quads()
     Tilemap = {{1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3},
                {4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6},
