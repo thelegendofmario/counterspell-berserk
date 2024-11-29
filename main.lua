@@ -121,20 +121,20 @@ function love.keypressed(k)
             if player.swords > 0 then
                 local directions = {
                     left = {
-                        x = -1,
+                        x = -1.1,
                         y = 0
                     },
                     right = {
-                        x = 1,
+                        x = 1.1,
                         y = 0
                     },
                     up = {
                         x = 0,
-                        y = -1
+                        y = -1.1
                     },
                     down = {
                         x = 0,
-                        y = 1
+                        y = 1.1
                     }
                 }
 
@@ -216,6 +216,28 @@ function love.update(dt)
                 end
             end
             for i, sword in ipairs(swords) do
+                -- check if its hitting a wall and if it is then rebound
+                local tile_x = math.floor((sword.x + quad.twidth / 2) / quad.twidth) + 1
+                local tile_y = math.floor((sword.y + quad.theight / 2) / quad.theight) + 1
+
+                if sword.speed.x > 0 then
+                    tile_x = math.ceil((sword.x + quad.twidth / 2) / quad.twidth) + 1
+                end
+                if sword.speed.y > 0 then
+                    tile_y = math.ceil((sword.y + quad.theight / 2) / quad.theight) + 1
+                end
+                if Tilemap[tile_y][tile_x] ~= 5 then
+                    TEsound.play(
+                        {"resources/sfx/bounce1.mp3", "resources/sfx/bounce2.mp3", "resources/sfx/bounce3.mp3"},
+                        "static", "sfx", 0.4)
+                    -- change the sword's direction by 180 degrees with a random deviation
+                    local angle = math.atan2(sword.speed.y, sword.speed.x)
+                    local deviation = math.rad(math.random(-20, 20))
+                    angle = angle + math.pi + deviation
+                    sword.speed.x = 4 * math.cos(angle)
+                    sword.speed.y = 4 * math.sin(angle)
+                end
+
                 local speedMultiplier = 1 + 1 * sword.speedAdjustment + (2.5 - sword.timeOut) * 0.4
                 sword.x = sword.x + sword.speed.x * speedMultiplier
                 sword.y = sword.y + sword.speed.y * speedMultiplier
@@ -226,14 +248,6 @@ function love.update(dt)
                     TEsound.stop(sword.name)
                     table.remove(swords, i)
                     player.swords = player.swords + 1
-                elseif sword.x < -0.5 * quad.twidth and sword.dir == "left" then
-                    sword.x = screen_width
-                elseif sword.x > screen_width and sword.dir == "right" then
-                    sword.x = -0.5
-                elseif sword.y < -0.5 * quad.theight and sword.dir == "up" then
-                    sword.y = screen_height
-                elseif sword.y > screen_height and sword.dir == "down" then
-                    sword.y = -0.5
                 else
                     -- check for hitting the player
                     if sword.x >= player.tile_x * quad.twidth - quad.twidth - 3 and sword.x <= player.tile_x *
