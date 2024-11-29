@@ -39,8 +39,10 @@ function init_vars()
     swords = {}
     player.hearts = 5
     player.swords = 5
-    player.tile_x = math.floor(math.random(1, #Tilemap[1]))
-    player.tile_y = math.floor(math.random(1, #Tilemap))
+    repeat
+        player.tile_x = math.floor(math.random(2, #Tilemap[1] - 1))
+        player.tile_y = math.floor(math.random(2, #Tilemap - 1))
+    until Tilemap[player.tile_y][player.tile_x] == 5
 
     berserkBar = {
         count = 3,
