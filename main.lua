@@ -127,7 +127,7 @@ function love.keypressed(k)
                             x = dir.x * 4 + dir.x * 4 * speedAdjustment,
                             y = dir.y * 4 + dir.y * 4 * speedAdjustment
                         },
-                        timeOut = 3.5,
+                        timeOut = 5,--3.5,
                         frame = 1,
                         name = "sword" .. game.totalSpawnedEnemy
                     }

@@ -9,10 +9,10 @@ function mapgen:genMap(width, height)
     mapgen.tilemap.tileHeight =32
     mapgen.tilemap.map = {}
     mapgen.tilemap.wallOdds = math.random(7, 15)
-    
+    mapgen.tilemap.potionOdds = math.random(20, 30)
     for i = 1, mapgen.tilemap.height do
         if i==1 then
-            mapgen.tilemap.map[i] = {1,2,2,2,2,2,11,2,2,2,2,2,2,2,2,2,2,2,2,2,3}
+            mapgen.tilemap.map[i] = {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3}
         elseif i==mapgen.tilemap.height then
             mapgen.tilemap.map[i] = {8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8}
         else
@@ -28,6 +28,8 @@ function mapgen:genMap(width, height)
                 --mapgen.tilemap.wallOdds = math.random(1, 10)
                 if math.random(mapgen.tilemap.wallOdds) == math.random(1) then
                     mapgen.tilemap.map[i][j] = 10
+                elseif math.random(mapgen.tilemap.potionOdds) == math.random(1) then
+                    mapgen.tilemap.map[i][j] = 11
                 else
                     mapgen.tilemap.map[i][j] = 5
                 end
