@@ -33,6 +33,7 @@ function spawnEnemy(tilemap)
 end
 
 function init_vars()
+    TEsound.play("resources/sfx/counterspell.mp3", "stream", "music", 0.1)
     game = {
         killed = 0,
         state = "menu",
@@ -162,6 +163,8 @@ function love.keypressed(k)
             end
         end,
         ["gameOver"] = function()
+            TEsound.stop("sfx")
+            TEsound.stop("music")
             game.state = "menu"
             print 'restarting'
             init_vars()
@@ -255,7 +258,6 @@ function love.update(dt)
             end
         end,
         ["gameOver"] = function()
-            TEsound.stop("sfx")
         end
     }
 
