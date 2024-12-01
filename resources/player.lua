@@ -5,8 +5,8 @@ player.image = love.graphics.newImage('resources/sprites/character.png')
 player.speed = 1
 player.swords = 5
 player.hearts = 4
-player.heartRegenAmount = 0
-player.maxHearts = 5--player.hearts
+player.heartRegenAmount = 0.001
+player.maxHearts = 5 -- player.hearts
 function player:update(k)
     local x = self.tile_x
     local y = self.tile_y
@@ -23,12 +23,12 @@ function player:update(k)
         x = x + self.speed
     end
 
-    if isEmpty(x, y) or isPotion(x,y) then
+    if isEmpty(x, y) or isPotion(x, y) then
         self.tile_x = x
         self.tile_y = y
     end
 
-    if isPotion(x,y) and player.hearts ~= player.maxHearts then
+    if isPotion(x, y) and player.hearts ~= player.maxHearts then
         self.hearts = self.hearts + 1
         Tilemap[self.tile_y][self.tile_x] = 5
     end

@@ -34,7 +34,7 @@ end
 
 function init_vars()
     mapgen = require 'resources.mapgen'
-    Tilemap = mapgen:genMap(21,14)
+    Tilemap = mapgen:genMap(21, 14)
     player = require 'resources.player'
     TEsound.play("resources/sfx/bg_music.wav", "stream", "music", 0.4)
     game = {
@@ -69,12 +69,12 @@ function love.load()
     quad = require 'resources.quadify'
     quad:set_image("resources/sprites/tiles.png", 3, 4)
     quad:make_quads()
-    
+
     screen_height = (quad.twidth * #Tilemap)
     screen_width = (quad.theight * #Tilemap[1])
     love.window.setMode(screen_width, screen_height)
     effect = moonshine(screen_width, screen_height, moonshine.effects.glow).chain(moonshine.effects.crt).chain(
-             moonshine.effects.vignette).chain(moonshine.effects.scanlines)
+                 moonshine.effects.vignette).chain(moonshine.effects.scanlines)
 
     effect.glow.min_luma = 0.9
     effect.glow.strength = 3
@@ -84,7 +84,6 @@ function love.load()
 
     effect.crt.distortionFactor = {1.06, 1.065}
     effect.scanlines.width = 1
-
 
 end
 
@@ -127,7 +126,7 @@ function love.keypressed(k)
                             x = dir.x * 4 + dir.x * 4 * speedAdjustment,
                             y = dir.y * 4 + dir.y * 4 * speedAdjustment
                         },
-                        timeOut = 5,--3.5,
+                        timeOut = 5, -- 3.5,
                         frame = 1,
                         name = "sword" .. game.totalSpawnedEnemy
                     }
@@ -211,7 +210,7 @@ function love.update(dt)
                     sword.speed.y = 4 * math.sin(angle)
                 end
 
-                local speedMultiplier = 1 + 1 * sword.speedAdjustment + (2.5 - sword.timeOut) * 0.4
+                local speedMultiplier = 1.65 + 1 * sword.speedAdjustment + (2.5 - sword.timeOut) * 0.4
                 sword.x = sword.x + sword.speed.x * speedMultiplier
                 sword.y = sword.y + sword.speed.y * speedMultiplier
                 sword.frame = (sword.frame + 0.6 + speedMultiplier / 2) % 17
