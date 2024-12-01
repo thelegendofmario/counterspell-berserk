@@ -5,7 +5,7 @@ player.image = love.graphics.newImage('resources/sprites/character.png')
 player.speed = 1
 player.swords = 5
 player.hearts = 4
-player.heartRegenAmount = 0.001
+player.heartRegenAmount = 0.0005
 player.maxHearts = 5 -- player.hearts
 function player:update(k)
     local x = self.tile_x
